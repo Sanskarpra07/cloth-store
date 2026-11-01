@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<!--
+  DAURA & CO. — Journal listing page
+  Sections: hero → featured story → article grid → newsletter → footer
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Journal — DAURA & CO.</title>
+  <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/images/favicon.png">
+  <link rel="shortcut icon" href="assets/images/favicon.ico">
+  <link rel="apple-touch-icon" href="assets/images/favicon.png">
+  <meta name="description" content="Stories on style, craft and conscious living from the DAURA & CO. journal.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="assets/css/style.css" rel="stylesheet">
+</head>
+<body>
+
+  <div class="announcement">
+    Free shipping on orders over <strong>$100</strong> &nbsp;·&nbsp; New Autumn collection now live
+  </div>
+
+  <nav class="navbar navbar-expand-lg site-nav">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">DAURA <span>&</span> CO.</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+              aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="mainNav">
+        <ul class="navbar-nav align-items-lg-center">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="shop.html">Shop</a></li>
+          <li class="nav-item"><a class="nav-link" href="shop.html?category=men">Men</a></li>
+          <li class="nav-item"><a class="nav-link" href="shop.html?category=women">Women</a></li>
+          <li class="nav-item"><a class="nav-link active" href="blog.html">Journal</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+          <li class="nav-item ms-lg-3">
+            <button class="nav-icon-btn" data-bs-toggle="offcanvas" data-bs-target="#cartDrawer"
+                    aria-controls="cartDrawer" aria-label="Open shopping bag">
+              <i class="bi bi-bag"></i>
+              <span class="cart-badge">0</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page hero -->
+  <header class="page-hero">
+    <div class="container">
+      <h1>The Journal</h1>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Journal</li>
+        </ol>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Featured story -->
+  <section class="section-pad-sm">
+    <div class="container">
+      <div class="row g-4 g-lg-5 align-items-center reveal">
+        <div class="col-lg-7">
+          <a href="blog-single.html" class="blog-feature-img">
+            <img src="https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?auto=format&fit=crop&w=1400&q=80" alt="The art of a considered wardrobe">
+          </a>
+        </div>
+        <div class="col-lg-5">
+          <span class="eyebrow">Featured Story</span>
+          <h2 class="section-title mb-3">The Art of a Considered Wardrobe</h2>
+          <p class="text-muted-warm">Why buying less, choosing better, and wearing what you already own is the most stylish decision you can make this season.</p>
+          <div class="blog-meta mb-4">Style Notes · 6 min read</div>
+          <a href="blog-single.html" class="btn btn-ink">Read the Story</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Article grid -->
+  <section class="section-pad-sm pb-5">
+    <div class="container">
+      <div class="section-head reveal">
+        <div>
+          <span class="eyebrow">Latest</span>
+          <h2 class="section-title">From the Studio</h2>
+        </div>
+      </div>
+
+      <div class="row g-4 reveal-stagger">
+        <div class="col-md-6 col-lg-4">
+          <article class="blog-card">
+            <a href="blog-single.html" class="blog-card-img">
+              <img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=800&q=80" alt="How to build a capsule wardrobe">
+            </a>
+            <div class="blog-meta">Style Notes · 5 min read</div>
+            <h3><a href="blog-single.html">How to Build a Capsule Wardrobe That Actually Works</a></h3>
+            <p>Twelve pieces, endless outfits. Our design team shares the framework they use at home.</p>
+            <a href="blog-single.html" class="link-underline">Read More</a>
+          </article>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <article class="blog-card">
+            <a href="blog-single.html" class="blog-card-img">
+              <img src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&w=800&q=80" alt="Inside our fabric mill">
+            </a>
+            <div class="blog-meta">Craft · 7 min read</div>
+            <h3><a href="blog-single.html">Inside the Mill: Where Our Wool Begins</a></h3>
+            <p>A visit to the family-run mill in Biella that has been spinning wool for six generations.</p>
+            <a href="blog-single.html" class="link-underline">Read More</a>
+          </article>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <article class="blog-card">
+            <a href="blog-single.html" class="blog-card-img">
+              <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80" alt="Autumn colour palette">
+            </a>
+            <div class="blog-meta">Trends · 4 min read</div>
+            <h3><a href="blog-single.html">The Autumn Palette: Clay, Cream & Ink</a></h3>
+            <p>Three colours that work together, with everything you already own, and for years to come.</p>
+            <a href="blog-single.html" class="link-underline">Read More</a>
+          </article>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <article class="blog-card">
+            <a href="blog-single.html" class="blog-card-img">
+              <img src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=800&q=80" alt="Caring for knitwear">
+            </a>
+            <div class="blog-meta">Care Guide · 4 min read</div>
+            <h3><a href="blog-single.html">The Only Knitwear Care Guide You Need</a></h3>
+            <p>Make your cashmere, merino and wool last a lifetime with these simple habits.</p>
+            <a href="blog-single.html" class="link-underline">Read More</a>
+          </article>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <article class="blog-card">
+            <a href="blog-single.html" class="blog-card-img">
+              <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80" alt="Studio visit with Elena Voss">
+            </a>
+            <div class="blog-meta">People · 6 min read</div>
+            <h3><a href="blog-single.html">Studio Visit: A Day with Elena Voss</a></h3>
+            <p>Our founder on sketching, sampling, and the piece she's most proud of this season.</p>
+            <a href="blog-single.html" class="link-underline">Read More</a>
+          </article>
+        </div>
+        <div class="col-md-6 col-lg-4">
+          <article class="blog-card">
+            <a href="blog-single.html" class="blog-card-img">
+              <img src="https://images.unsplash.com/photo-1485968579580-b6d095142e6e?auto=format&fit=crop&w=800&q=80" alt="Sustainable fashion commitments">
+            </a>
+            <div class="blog-meta">Sustainability · 8 min read</div>
+            <h3><a href="blog-single.html">Our 2026 Sustainability Commitments</a></h3>
+            <p>The measurable promises we're making — and how we'll report on them every year.</p>
+            <a href="blog-single.html" class="link-underline">Read More</a>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter -->
+  <section class="container section-pad">
+    <div class="newsletter-box reveal">
+      <span class="eyebrow" style="color:#e8b4a0">Newsletter</span>
+      <h2>Stories Worth Wearing</h2>
+      <p>Join the list for new journal stories, early access to drops, and a welcome discount.</p>
+      <form class="newsletter-form d-flex js-newsletter">
+        <input type="email" class="form-control" placeholder="Your email address" required aria-label="Email address">
+        <button class="btn btn-clay" type="submit">Subscribe</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <span class="footer-brand">DAURA <span>&</span> CO.</span>
+          <p class="mb-4" style="max-width:300px">Timeless essentials, made responsibly. Designed in Kathmandu, shipped worldwide.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+            <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+            <a href="#" aria-label="Pinterest"><i class="bi bi-pinterest"></i></a>
+            <a href="#" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+          </div>
+        </div>
+        <div class="col-6 col-lg-2">
+          <h6>Shop</h6>
+          <ul class="footer-links">
+            <li><a href="shop.html">All Products</a></li>
+            <li><a href="shop.html?category=men">Men</a></li>
+            <li><a href="shop.html?category=women">Women</a></li>
+            <li><a href="shop.html?category=accessories">Accessories</a></li>
+            <li><a href="shop.html">Sale</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-lg-2">
+          <h6>Help</h6>
+          <ul class="footer-links">
+            <li><a href="contact.html">Contact Us</a></li>
+            <li><a href="#">Shipping</a></li>
+            <li><a href="#">Returns</a></li>
+            <li><a href="#">Size Guide</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="cart.html">Shopping Bag</a></li>
+            <li><a href="login.html">Sign In</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-lg-2">
+          <h6>Company</h6>
+          <ul class="footer-links">
+            <li><a href="about.html">Our Story</a></li>
+            <li><a href="blog.html">Journal</a></li>
+            <li><a href="#">Sustainability</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Press</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-lg-2">
+          <h6>Visit</h6>
+          <ul class="footer-links">
+            <li>Thamel Marg<br>Kathmandu 44600</li>
+            <li class="mt-2">hello@dauraandco.com</li>
+            <li>+977 1 534 2211</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom d-flex flex-wrap justify-content-between gap-2">
+        <span>© <span class="js-year">2026</span> DAURA & CO. All rights reserved.</span>
+        <span>Privacy Policy · Terms of Service</span>
+      </div>
+    </div>
+  </footer>
+
+  <button id="backToTop" aria-label="Back to top"><i class="bi bi-arrow-up"></i></button>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

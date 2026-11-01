@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<!--
+  DAURA & CO. — Product detail page
+  Sections: breadcrumb → product detail → related products → newsletter → footer
+  The detail view and related cards are rendered by assets/js/main.js.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product — DAURA & CO.</title>
+  <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/images/favicon.png">
+  <link rel="shortcut icon" href="assets/images/favicon.ico">
+  <link rel="apple-touch-icon" href="assets/images/favicon.png">
+  <meta name="description" content="Product details — DAURA & CO. contemporary clothing store.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="assets/css/style.css" rel="stylesheet">
+</head>
+<body>
+
+  <div class="announcement">
+    Free shipping on orders over <strong>$100</strong> &nbsp;·&nbsp; New Autumn collection now live
+  </div>
+
+  <nav class="navbar navbar-expand-lg site-nav">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">DAURA <span>&</span> CO.</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+              aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="mainNav">
+        <ul class="navbar-nav align-items-lg-center">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link active" href="shop.html">Shop</a></li>
+          <li class="nav-item"><a class="nav-link" href="shop.html?category=men">Men</a></li>
+          <li class="nav-item"><a class="nav-link" href="shop.html?category=women">Women</a></li>
+          <li class="nav-item"><a class="nav-link" href="blog.html">Journal</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+          <li class="nav-item ms-lg-3">
+            <button class="nav-icon-btn" data-bs-toggle="offcanvas" data-bs-target="#cartDrawer"
+                    aria-controls="cartDrawer" aria-label="Open shopping bag">
+              <i class="bi bi-bag"></i>
+              <span class="cart-badge">0</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Breadcrumb bar -->
+  <div class="border-bottom" style="padding: 18px 0;">
+    <div class="container">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0" style="font-size:11px;letter-spacing:.14em;text-transform:uppercase">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item"><a href="shop.html">Shop</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Product</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+  <!-- ============ PRODUCT DETAIL ============
+       The gallery, options, and description are all built by
+       renderProductPage() in assets/js/main.js based on ?id= in the URL. -->
+  <section class="section-pad-sm">
+    <div class="container">
+      <div class="row g-4 g-lg-5" id="productDetail">
+        <!-- Fallback content if JS is disabled -->
+        <div class="col-12 text-center py-5 text-muted">Loading product…</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related products (filled by JS) -->
+  <section class="section-pad bg-sand">
+    <div class="container">
+      <div class="section-head reveal">
+        <div>
+          <span class="eyebrow">Complete the Look</span>
+          <h2 class="section-title">You May Also Like</h2>
+        </div>
+        <a href="shop.html" class="link-underline">View All</a>
+      </div>
+      <div class="row gx-3 gx-lg-4" id="relatedGrid"></div>
+    </div>
+  </section>
+
+  <!-- Newsletter -->
+  <section class="container section-pad">
+    <div class="newsletter-box reveal">
+      <span class="eyebrow" style="color:#e8b4a0">Newsletter</span>
+      <h2>Get 10% Off Your First Order</h2>
+      <p>Join the list for early access to drops, private sales, and a welcome discount code sent straight to your inbox.</p>
+      <form class="newsletter-form d-flex js-newsletter">
+        <input type="email" class="form-control" placeholder="Your email address" required aria-label="Email address">
+        <button class="btn btn-clay" type="submit">Subscribe</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <span class="footer-brand">DAURA <span>&</span> CO.</span>
+          <p class="mb-4" style="max-width:300px">Timeless essentials, made responsibly. Designed in Kathmandu, shipped worldwide.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+            <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+            <a href="#" aria-label="Pinterest"><i class="bi bi-pinterest"></i></a>
+            <a href="#" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+          </div>
+        </div>
+        <div class="col-6 col-lg-2">
+          <h6>Shop</h6>
+          <ul class="footer-links">
+            <li><a href="shop.html">All Products</a></li>
+            <li><a href="shop.html?category=men">Men</a></li>
+            <li><a href="shop.html?category=women">Women</a></li>
+            <li><a href="shop.html?category=accessories">Accessories</a></li>
+            <li><a href="shop.html">Sale</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-lg-2">
+          <h6>Help</h6>
+          <ul class="footer-links">
+            <li><a href="contact.html">Contact Us</a></li>
+            <li><a href="#">Shipping</a></li>
+            <li><a href="#">Returns</a></li>
+            <li><a href="#">Size Guide</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="cart.html">Shopping Bag</a></li>
+            <li><a href="login.html">Sign In</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-lg-2">
+          <h6>Company</h6>
+          <ul class="footer-links">
+            <li><a href="about.html">Our Story</a></li>
+            <li><a href="blog.html">Journal</a></li>
+            <li><a href="#">Sustainability</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Press</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-lg-2">
+          <h6>Visit</h6>
+          <ul class="footer-links">
+            <li>Thamel Marg<br>Kathmandu 44600</li>
+            <li class="mt-2">hello@dauraandco.com</li>
+            <li>+977 1 534 2211</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom d-flex flex-wrap justify-content-between gap-2">
+        <span>© <span class="js-year">2026</span> DAURA & CO. All rights reserved.</span>
+        <span>Privacy Policy · Terms of Service</span>
+      </div>
+    </div>
+  </footer>
+
+  <button id="backToTop" aria-label="Back to top"><i class="bi bi-arrow-up"></i></button>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

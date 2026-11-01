@@ -1,0 +1,9 @@
+# Local deployment copy (deploy the repository root instead)
+vercel-deploy/
+
+# Vercel local metadata
+.vercel/
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<!--
+  DAURA & CO. — Shop page
+  Sections: hero → filter sidebar + product grid → newsletter → footer
+  Filters and product cards are rendered by assets/js/main.js.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop — DAURA & CO.</title>
+  <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/images/favicon.png">
+  <link rel="shortcut icon" href="assets/images/favicon.ico">
+  <link rel="apple-touch-icon" href="assets/images/favicon.png">
+  <meta name="description" content="Browse the full DAURA & CO. collection: clothing and accessories for men and women.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="assets/css/style.css" rel="stylesheet">
+</head>
+<body>
+
+  <div class="announcement">
+    Free shipping on orders over <strong>$100</strong> &nbsp;·&nbsp; New Autumn collection now live
+  </div>
+
+  <!-- Navbar (solid style on inner pages) -->
+  <nav class="navbar navbar-expand-lg site-nav">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">DAURA <span>&</span> CO.</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+              aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="mainNav">
+        <ul class="navbar-nav align-items-lg-center">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link active" href="shop.html">Shop</a></li>
+          <li class="nav-item"><a class="nav-link" href="shop.html?category=men">Men</a></li>
+          <li class="nav-item"><a class="nav-link" href="shop.html?category=women">Women</a></li>
+          <li class="nav-item"><a class="nav-link" href="blog.html">Journal</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+          <li class="nav-item ms-lg-3">
+            <button class="nav-icon-btn" data-bs-toggle="offcanvas" data-bs-target="#cartDrawer"
+                    aria-controls="cartDrawer" aria-label="Open shopping bag">
+              <i class="bi bi-bag"></i>
+              <span class="cart-badge">0</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===================== SHOP HERO ===================== -->
+  <header class="shop-hero"
+          style="background-image:url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1800&q=80')">
+    <div class="shop-hero-overlay"></div>
+    <div class="container shop-hero-content">
+      <span class="eyebrow" style="color:#e8b4a0">Autumn / Winter 2026</span>
+      <h1>The Collection</h1>
+      <p>Timeless essentials for men and women — designed to be worn for years, not seasons.</p>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Shop</li>
+        </ol>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===================== SHOP LAYOUT ===================== -->
+  <section class="container section-pad-sm">
+    <div class="row g-4 g-lg-5">
+
+      <!-- ---- Filter sidebar (offcanvas on mobile, sticky column on desktop) ----
+           offcanvas-lg means: a slide-in panel below 992px, normal content above. -->
+      <aside class="col-lg-3">
+        <div class="offcanvas-lg offcanvas-start shop-sidebar" tabindex="-1"
+             id="filterDrawer" aria-labelledby="filterDrawerLabel">
+
+          <div class="offcanvas-header d-lg-none">
+            <h5 class="offcanvas-title" id="filterDrawerLabel">Filters</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+
+          <div class="offcanvas-body shop-sidebar-body">
+            <!-- Filter groups (category, price, size, color) are injected here by js/main.js -->
+            <div id="filterGroups"></div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ---- Main product area ---- -->
+      <div class="col-lg-9">
+
+        <!-- Toolbar: mobile filter button + results + sort -->
+        <div class="shop-toolbar">
+          <button class="btn btn-outline-ink btn-filter-mobile d-lg-none"
+                  data-bs-toggle="offcanvas" data-bs-target="#filterDrawer" aria-controls="filterDrawer">
+            <i class="bi bi-sliders"></i> Filters
+          </button>
+
+          <span class="results-count" id="resultsCount">16 products</span>
+
+          <select class="sort-select ms-auto" id="sortSelect" aria-label="Sort products">
+            <option value="featured">Sort: Featured</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
+            <option value="name">Name: A–Z</option>
+          </select>
+        </div>
+
+        <!-- Active filter tags appear here -->
+        <div class="active-filters" id="activeFilters"></div>
+
+        <!-- Products are injected here by js/main.js -->
+        <div class="row gx-3 gx-lg-4" id="shopGrid"></div>
+
+        <!-- Empty state when nothing matches -->
+        <div class="shop-empty" id="shopEmpty" style="display:none">
+          <i class="bi bi-search"></i>
+          <p class="mb-1" style="font-family:var(--font-display);font-size:20px;color:var(--ink)">No products found</p>
+          <p style="font-size:13px">Try removing a filter or widening the price range.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Newsletter -->
+  <section class="container mb-5">
+    <div class="newsletter-box reveal">
+      <span class="eyebrow" style="color:#e8b4a0">Newsletter</span>
+      <h2>Get 10% Off Your First Order</h2>
+      <p>Join the list for early access to drops, private sales, and a welcome discount code sent straight to your inbox.</p>
+      <form class="newsletter-form d-flex js-newsletter">
+        <input type="email" class="form-control" placeholder="Your email address" required aria-label="Email address">
+        <button class="btn btn-clay" type="submit">Subscribe</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <span class="footer-brand">DAURA <span>&</span> CO.</span>
+          <p class="mb-4" style="max-width:300px">Timeless essentials, made responsibly. Designed in Kathmandu, shipped worldwide.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+            <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+            <a href="#" aria-label="Pinterest"><i class="bi bi-pinterest"></i></a>
+            <a href="#" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+          </div>
+        </div>
+        <div class="col-6 col-lg-2">
+          <h6>Shop</h6>
+          <ul class="footer-links">
+            <li><a href="shop.html">All Products</a></li>
+            <li><a href="shop.html?category=men">Men</a></li>
+            <li><a href="shop.html?category=women">Women</a></li>
+            <li><a href="shop.html?category=accessories">Accessories</a></li>
+            <li><a href="shop.html">Sale</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-lg-2">
+          <h6>Help</h6>
+          <ul class="footer-links">
+            <li><a href="contact.html">Contact Us</a></li>
+            <li><a href="#">Shipping</a></li>
+            <li><a href="#">Returns</a></li>
+            <li><a href="#">Size Guide</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="cart.html">Shopping Bag</a></li>
+            <li><a href="login.html">Sign In</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-lg-2">
+          <h6>Company</h6>
+          <ul class="footer-links">
+            <li><a href="about.html">Our Story</a></li>
+            <li><a href="blog.html">Journal</a></li>
+            <li><a href="#">Sustainability</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Press</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-lg-2">
+          <h6>Visit</h6>
+          <ul class="footer-links">
+            <li>Thamel Marg<br>Kathmandu 44600</li>
+            <li class="mt-2">hello@dauraandco.com</li>
+            <li>+977 1 534 2211</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom d-flex flex-wrap justify-content-between gap-2">
+        <span>© <span class="js-year">2026</span> DAURA & CO. All rights reserved.</span>
+        <span>Privacy Policy · Terms of Service</span>
+      </div>
+    </div>
+  </footer>
+
+  <button id="backToTop" aria-label="Back to top"><i class="bi bi-arrow-up"></i></button>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

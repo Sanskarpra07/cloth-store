@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<!--
+  DAURA & CO. — Home page
+  Sections: hero → categories → featured → editorial → new arrivals
+            → value props → testimonials → gallery → newsletter → footer
+  Product grids are rendered by assets/js/main.js.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DAURA & CO. — Modern Wardrobe Essentials</title>
+  <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/images/favicon.png">
+  <link rel="shortcut icon" href="assets/images/favicon.ico">
+  <link rel="apple-touch-icon" href="assets/images/favicon.png">
+  <meta name="description" content="DAURA & CO. is a contemporary clothing store offering timeless essentials for men and women. Free shipping over $100.">
+
+  <!-- Google Fonts: Playfair Display (headings) + Inter (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 CSS + Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+  <!-- Our own design-system CSS (always last so it can override Bootstrap) -->
+  <link href="assets/css/style.css" rel="stylesheet">
+</head>
+<body>
+
+  <!-- ===================== ANNOUNCEMENT BAR ===================== -->
+  <div class="announcement">
+    Free shipping on orders over <strong>$100</strong> &nbsp;·&nbsp; New Autumn collection now live
+  </div>
+
+  <!-- ===================== NAVBAR =====================
+       The home page navbar starts transparent over the hero image,
+       then becomes solid when you scroll (handled by JS). -->
+  <nav class="navbar navbar-expand-lg site-nav nav-transparent">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">DAURA <span>&</span> CO.</a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+              aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse justify-content-end" id="mainNav">
+        <ul class="navbar-nav align-items-lg-center">
+          <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="shop.html">Shop</a></li>
+          <li class="nav-item"><a class="nav-link" href="shop.html?category=men">Men</a></li>
+          <li class="nav-item"><a class="nav-link" href="shop.html?category=women">Women</a></li>
+          <li class="nav-item"><a class="nav-link" href="blog.html">Journal</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+          <li class="nav-item ms-lg-3">
+            <button class="nav-icon-btn" data-bs-toggle="offcanvas" data-bs-target="#cartDrawer"
+                    aria-controls="cartDrawer" aria-label="Open shopping bag">
+              <i class="bi bi-bag"></i>
+              <span class="cart-badge">0</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===================== HERO SLIDER ===================== -->
+  <header class="hero">
+    <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="6000">
+
+      <div class="carousel-indicators">
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+      </div>
+
+      <!-- Prev / Next arrows -->
+      <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+        <span class="hero-arrow"><i class="bi bi-arrow-left"></i></span>
+        <span class="visually-hidden">Previous slide</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+        <span class="hero-arrow"><i class="bi bi-arrow-right"></i></span>
+        <span class="visually-hidden">Next slide</span>
+      </button>
+
+      <div class="carousel-inner">
+        <!-- Slide 1 -->
+        <div class="carousel-item active"
+             style="background-image:url('https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1800&q=80')">
+          <div class="hero-overlay"></div>
+          <div class="hero-content h-100">
+            <div class="container h-100 d-flex flex-column justify-content-end">
+              <span class="hero-kicker">Autumn / Winter 2026</span>
+              <h1 class="hero-title">Dress the<br>Everyday</h1>
+              <p class="hero-text">Timeless silhouettes, honest fabrics, and a palette that goes with everything you own.</p>
+              <div class="hero-actions">
+                <a href="shop.html" class="btn btn-light">Shop Collection</a>
+                <a href="about.html" class="btn btn-outline-light">Our Story</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="carousel-item"
+             style="background-image:url('https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1800&q=80')">
+          <div class="hero-overlay"></div>
+          <div class="hero-content h-100">
+            <div class="container h-100 d-flex flex-column justify-content-end">
+              <span class="hero-kicker">New Arrivals</span>
+              <h1 class="hero-title">The Softest<br>Season Yet</h1>
+              <p class="hero-text">Cashmere blends, washed silks and heavyweight cottons — made to be lived in.</p>
+              <div class="hero-actions">
+                <a href="shop.html?category=women" class="btn btn-light">Shop Women</a>
+                <a href="shop.html?category=men" class="btn btn-outline-light">Shop Men</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="carousel-item"
+             style="background-image:url('https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=1800&q=80')">
+          <div class="hero-overlay"></div>
+          <div class="hero-content h-100">
+            <div class="container h-100 d-flex flex-column justify-content-end">
+              <span class="hero-kicker">Up to 30% Off</span>
+              <h1 class="hero-title">Quiet Luxury,<br>Louder Price</h1>
+              <p class="hero-text">Selected coats, knits and denim reduced for a short time only — while stock lasts.</p>
+              <div class="hero-actions">
+                <a href="shop.html" class="btn btn-light">Shop The Sale</a>
+                <a href="shop.html" class="btn btn-outline-light">Shop New</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================== CATEGORY TILES ===================== -->
+  <section class="section-pad">
+    <div class="container">
+      <div class="text-center mb-5 reveal">
+        <span class="eyebrow">Browse</span>
+        <h2 class="section-title">Shop by Category</h2>
+      </div>
+
+      <div class="row g-4 reveal-stagger">
+        <div class="col-md-4">
+          <a href="shop.html?category=women" class="cat-tile">
+            <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=900&q=80" alt="Women's collection">
+            <div class="cat-tile-label">
+              <div>
+                <span class="cat-count" data-cat-count="women"></span>
+                <h3>Women</h3>
+              </div>
+              <span class="cat-arrow"><i class="bi bi-arrow-right"></i></span>
+            </div>
+          </a>
+        </div>
+        <div class="col-md-4">
+          <a href="shop.html?category=men" class="cat-tile">
+            <img src="https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?auto=format&fit=crop&w=900&q=80" alt="Men's collection">
+            <div class="cat-tile-label">
+              <div>
+                <span class="cat-count" data-cat-count="men"></span>
+                <h3>Men</h3>
+              </div>
+              <span class="cat-arrow"><i class="bi bi-arrow-right"></i></span>
+            </div>
+          </a>
+        </div>
+        <div class="col-md-4">
+          <a href="shop.html?category=accessories" class="cat-tile">
+            <img src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=900&q=80" alt="Accessories collection">
+            <div class="cat-tile-label">
+              <div>
+                <span class="cat-count" data-cat-count="accessories"></span>
+                <h3>Accessories</h3>
+              </div>
+              <span class="cat-arrow"><i class="bi bi-arrow-right"></i></span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== MARQUEE STRIP ===================== -->
+  <div class="marquee-strip" aria-hidden="true">
+    <div class="marquee-track">
+      <span>Free shipping over $100</span><span class="dot"></span>
+      <span>30-day easy returns</span><span class="dot"></span>
+      <span>Sustainably sourced fabrics</span><span class="dot"></span>
+      <span>New drops every Friday</span><span class="dot"></span>
+      <span>Free shipping over $100</span><span class="dot"></span>
+      <span>30-day easy returns</span><span class="dot"></span>
+      <span>Sustainably sourced fabrics</span><span class="dot"></span>
+      <span>New drops every Friday</span><span class="dot"></span>
+    </div>
+  </div>
+
+  <!-- ===================== FEATURED PRODUCTS ===================== -->
+  <section class="section-pad">
+    <div class="container">
+      <div class="section-head reveal">
+        <div>
+          <span class="eyebrow">Curated for you</span>
+          <h2 class="section-title">Featured Pieces</h2>
+        </div>
+        <a href="shop.html" class="link-underline">View All Products</a>
+      </div>
+
+      <!-- Products are injected here by js/main.js -->
+      <div class="row gx-3 gx-lg-4" id="featuredGrid"></div>
+    </div>
+  </section>
+
+  <!-- ===================== EDITORIAL SPLIT BANNER ===================== -->
+  <section class="bg-sand section-pad">
+    <div class="container">
+      <div class="row align-items-center g-4 g-lg-5">
+        <div class="col-lg-6 reveal reveal-left">
+          <div class="editorial-img">
+            <img src="https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?auto=format&fit=crop&w=1200&q=80" alt="Model wearing the DAURA & CO. autumn collection">
+          </div>
+        </div>
+        <div class="col-lg-6 reveal reveal-right">
+          <div class="editorial-body ps-lg-5">
+            <span class="eyebrow">The DAURA & CO. Standard</span>
+            <h2>Fewer Things,<br>Better Made.</h2>
+            <p>We believe a wardrobe should earn its space. Every DAURA & CO. piece is designed in-house, sampled three times, and produced in small runs with factories we visit in person.</p>
+            <p>No trends for the sake of trends. No fabrics we wouldn't wear ourselves. Just clothes that feel good on day one and better on day one hundred.</p>
+            <a href="about.html" class="btn btn-ink mt-3">Read Our Story</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== NEW ARRIVALS ===================== -->
+  <section class="section-pad">
+    <div class="container">
+      <div class="section-head reveal">
+        <div>
+          <span class="eyebrow">Just Landed</span>
+          <h2 class="section-title">New Arrivals</h2>
+        </div>
+        <div class="section-actions">
+          <a href="shop.html" class="link-underline">Shop New In</a>
+
+          <!-- These arrows control the #newGrid carousel below -->
+          <div class="carousel-nav" aria-label="New Arrivals carousel">
+            <button type="button" class="carousel-nav-btn" data-carousel-prev="newGrid" aria-label="Previous products">
+              <i class="bi bi-arrow-left"></i>
+            </button>
+            <button type="button" class="carousel-nav-btn" data-carousel-next="newGrid" aria-label="Next products">
+              <i class="bi bi-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product cards are injected here by js/main.js. The list is repeated
+           three times so the carousel can loop smoothly in both directions. -->
+      <div class="product-carousel-track" id="newGrid" aria-roledescription="carousel"></div>
+    </div>
+  </section>
+
+  <!-- ===================== VALUE PROPS ===================== -->
+  <section class="bg-paper border-top-line border-bottom-line">
+    <div class="border-top-line">
+      <div class="container">
+        <div class="row g-0 reveal-stagger">
+          <div class="col-6 col-lg-3 feature-item">
+            <span class="feature-icon"><i class="bi bi-truck"></i></span>
+            <h5>Free Shipping</h5>
+            <p>On every order over $100, worldwide.</p>
+          </div>
+          <div class="col-6 col-lg-3 feature-item">
+            <span class="feature-icon"><i class="bi bi-arrow-counterclockwise"></i></span>
+            <h5>30-Day Returns</h5>
+            <p>Changed your mind? Send it back, free.</p>
+          </div>
+          <div class="col-6 col-lg-3 feature-item">
+            <span class="feature-icon"><i class="bi bi-lock"></i></span>
+            <h5>Secure Checkout</h5>
+            <p>SSL encrypted payments you can trust.</p>
+          </div>
+          <div class="col-6 col-lg-3 feature-item">
+            <span class="feature-icon"><i class="bi bi-heart"></i></span>
+            <h5>Made Responsibly</h5>
+            <p>Ethically produced in audited factories.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TESTIMONIALS ===================== -->
+  <section class="section-pad">
+    <div class="container">
+      <div class="text-center mb-5 reveal">
+        <span class="eyebrow">Kind Words</span>
+        <h2 class="section-title">Loved by 12,000+ Customers</h2>
+      </div>
+
+      <div id="testimonialCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
+        <div class="carousel-inner">
+          <!-- Slide 1 -->
+          <div class="carousel-item active">
+            <div class="row justify-content-center">
+              <div class="col-lg-8">
+                <div class="testimonial-card text-center">
+                  <div class="testimonial-stars">★★★★★</div>
+                  <p class="testimonial-text">"The wool coat is genuinely the nicest thing in my wardrobe. The fit is perfect, the fabric is incredible, and I get compliments every single time I wear it."</p>
+                  <div class="testimonial-author justify-content-center">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80" alt="Sofia M.">
+                    <div class="text-start">
+                      <strong>Sofia M.</strong>
+                      <small>Milan, Italy</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Slide 2 -->
+          <div class="carousel-item">
+            <div class="row justify-content-center">
+              <div class="col-lg-8">
+                <div class="testimonial-card text-center">
+                  <div class="testimonial-stars">★★★★★</div>
+                  <p class="testimonial-text">"Finally a brand that gets menswear right. The oxford shirt and denim are both next-level quality — and shipping took only five days to London."</p>
+                  <div class="testimonial-author justify-content-center">
+                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80" alt="James K.">
+                    <div class="text-start">
+                      <strong>James K.</strong>
+                      <small>London, UK</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Slide 3 -->
+          <div class="carousel-item">
+            <div class="row justify-content-center">
+              <div class="col-lg-8">
+                <div class="testimonial-card text-center">
+                  <div class="testimonial-stars">★★★★★</div>
+                  <p class="testimonial-text">"I ordered the cashmere knit on a whim and it's now on permanent rotation. Softest thing I own. The packaging was beautiful too — felt like a real gift."</p>
+                  <div class="testimonial-author justify-content-center">
+                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=200&q=80" alt="Amara T.">
+                    <div class="text-start">
+                      <strong>Amara T.</strong>
+                      <small>New York, USA</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-controls">
+          <button type="button" class="testimonial-nav" data-bs-target="#testimonialCarousel"
+                  data-bs-slide="prev" aria-label="Previous testimonial">
+            <i class="bi bi-arrow-left" aria-hidden="true"></i>
+          </button>
+
+          <div class="carousel-indicators testimonial-indicators">
+            <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Testimonial 1"></button>
+            <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="1" aria-label="Testimonial 2"></button>
+            <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="2" aria-label="Testimonial 3"></button>
+          </div>
+
+          <button type="button" class="testimonial-nav" data-bs-target="#testimonialCarousel"
+                  data-bs-slide="next" aria-label="Next testimonial">
+            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== INSTAGRAM GALLERY ===================== -->
+  <section class="pb-5">
+    <div class="text-center mb-4 reveal">
+      <span class="eyebrow">@dauraandco</span>
+      <h2 class="section-title">Wear It, Tag It</h2>
+    </div>
+    <div class="insta-grid reveal">
+      <a href="#" class="insta-item"><img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&w=600&q=80" alt="Instagram post"></a>
+      <a href="#" class="insta-item"><img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=600&q=80" alt="Instagram post"></a>
+      <a href="#" class="insta-item"><img src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=600&q=80" alt="Instagram post"></a>
+      <a href="#" class="insta-item"><img src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&w=600&q=80" alt="Instagram post"></a>
+      <a href="#" class="insta-item"><img src="https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?auto=format&fit=crop&w=600&q=80" alt="Instagram post"></a>
+      <a href="#" class="insta-item"><img src="https://images.unsplash.com/photo-1479064555552-3ef4979f8908?auto=format&fit=crop&w=600&q=80" alt="Instagram post"></a>
+    </div>
+  </section>
+
+  <!-- ===================== NEWSLETTER ===================== -->
+  <section class="container mb-5">
+    <div class="newsletter-box reveal">
+      <span class="eyebrow" style="color:#e8b4a0">Newsletter</span>
+      <h2>Get 10% Off Your First Order</h2>
+      <p>Join the list for early access to drops, private sales, and a welcome discount code sent straight to your inbox.</p>
+      <form class="newsletter-form d-flex js-newsletter">
+        <input type="email" class="form-control" placeholder="Your email address" required aria-label="Email address">
+        <button class="btn btn-clay" type="submit">Subscribe</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <span class="footer-brand">DAURA <span>&</span> CO.</span>
+          <p class="mb-4" style="max-width:300px">Timeless essentials, made responsibly. Designed in Kathmandu, shipped worldwide.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+            <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+            <a href="#" aria-label="Pinterest"><i class="bi bi-pinterest"></i></a>
+            <a href="#" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+          </div>
+        </div>
+        <div class="col-6 col-lg-2">
+          <h6>Shop</h6>
+          <ul class="footer-links">
+            <li><a href="shop.html">All Products</a></li>
+            <li><a href="shop.html?category=men">Men</a></li>
+            <li><a href="shop.html?category=women">Women</a></li>
+            <li><a href="shop.html?category=accessories">Accessories</a></li>
+            <li><a href="shop.html">Sale</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-lg-2">
+          <h6>Help</h6>
+          <ul class="footer-links">
+            <li><a href="contact.html">Contact Us</a></li>
+            <li><a href="#">Shipping</a></li>
+            <li><a href="#">Returns</a></li>
+            <li><a href="#">Size Guide</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="cart.html">Shopping Bag</a></li>
+            <li><a href="login.html">Sign In</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-lg-2">
+          <h6>Company</h6>
+          <ul class="footer-links">
+            <li><a href="about.html">Our Story</a></li>
+            <li><a href="blog.html">Journal</a></li>
+            <li><a href="#">Sustainability</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Press</a></li>
+          </ul>
+        </div>
+        <div class="col-6 col-lg-2">
+          <h6>Visit</h6>
+          <ul class="footer-links">
+            <li>Thamel Marg<br>Kathmandu 44600</li>
+            <li class="mt-2">hello@dauraandco.com</li>
+            <li>+977 1 534 2211</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom d-flex flex-wrap justify-content-between gap-2">
+        <span>© <span class="js-year">2026</span> DAURA & CO. All rights reserved.</span>
+        <span>Privacy Policy · Terms of Service</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Back to top button -->
+  <button id="backToTop" aria-label="Back to top"><i class="bi bi-arrow-up"></i></button>
+
+  <!-- Bootstrap JS bundle (needed for carousel, offcanvas, collapse...) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Our site logic (products, cart, animations) -->
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
