@@ -979,7 +979,11 @@ img { max-width: 100%; }
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  cursor: grab;
+  user-select: none;
 }
+.insta-carousel-track.is-dragging { cursor: grabbing; }
+.insta-carousel-track .insta-item { -webkit-user-drag: none; }
 .insta-carousel-track::-webkit-scrollbar { display: none; }
 .insta-carousel-track > .insta-item {
   flex: 0 0 calc((100% - 1rem) / 2);

@@ -1667,17 +1667,20 @@ function setupProductCarousel() {
   startAutoplay();
 }
 
-/** Loop the homepage community photos using the same controls as New Arrivals. */
+/**
+ * Auto-scroll the homepage community photos in a seamless loop.
+ * The original photos are followed by two hidden copies. Starting at the
+ * second set lets us jump back one set at either end without a visible reset.
+ * Touch scrolling stays native; mouse users can click and drag the row.
+ */
 function setupInstagramCarousel() {
   const track = document.getElementById("instaGrid");
   if (!track || !track.children.length) return;
 
-  const prevButton = document.querySelector('[data-carousel-prev="instaGrid"]');
-  const nextButton = document.querySelector('[data-carousel-next="instaGrid"]');
-  if (!prevButton || !nextButton) return;
-
   const originalItems = Array.from(track.children);
   const cardsPerCopy = originalItems.length;
+  // Mark duplicate photos as decorative so screen readers announce each
+  // original photo only once.
   const copy = originalItems.map(function (item) {
     const clone = item.cloneNode(true);
     clone.setAttribute("aria-hidden", "true");
@@ -1698,13 +1701,6 @@ function setupInstagramCarousel() {
     return start && nextCopy ? nextCopy.getBoundingClientRect().left - start.getBoundingClientRect().left : 0;
   }
   function canScroll() { return copyWidth() > track.clientWidth + 1; }
-  function controls() {
-    const enabled = canScroll();
-    [prevButton, nextButton].forEach(function (button) {
-      button.disabled = !enabled;
-      button.classList.toggle("is-hidden", !enabled);
-    });
-  }
   function move(direction) {
     const first = track.firstElementChild;
     const gap = parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap) || 0;
@@ -1715,6 +1711,7 @@ function setupInstagramCarousel() {
     stop();
     if (!prefersReducedMotion && canScroll()) timer = setInterval(function () { move(1); }, CAROUSEL_AUTOPLAY_MS);
   }
+  // When a duplicated set reaches either edge, shift by one set invisibly.
   function normalize() {
     if (normalizing) return;
     const width = copyWidth();
@@ -1726,24 +1723,40 @@ function setupInstagramCarousel() {
     }
   }
 
-  prevButton.addEventListener("click", function () { move(-1); start(); });
-  nextButton.addEventListener("click", function () { move(1); start(); });
   track.addEventListener("scroll", function () {
-    controls();
     clearTimeout(settleTimer);
     settleTimer = setTimeout(normalize, 150);
   }, { passive: true });
-  track.addEventListener("pointerdown", stop);
-  track.addEventListener("pointerup", start);
-  track.addEventListener("pointercancel", start);
+
+  // Keep touch scrolling native and add click-and-drag support for a mouse.
+  let dragStartX = 0;
+  let dragStartScroll = 0;
+  track.addEventListener("pointerdown", function (event) {
+    stop();
+    if (event.pointerType !== "mouse" || event.button !== 0) return;
+    dragStartX = event.clientX;
+    dragStartScroll = track.scrollLeft;
+    track.classList.add("is-dragging");
+    track.setPointerCapture(event.pointerId);
+  });
+  track.addEventListener("pointermove", function (event) {
+    if (!track.classList.contains("is-dragging")) return;
+    track.scrollLeft = dragStartScroll - (event.clientX - dragStartX);
+  });
+  function endDrag() {
+    track.classList.remove("is-dragging");
+    start();
+  }
+  track.addEventListener("pointerup", endDrag);
+  track.addEventListener("pointercancel", endDrag);
+  // Pause while people hover, drag, focus the row, or switch browser tabs.
   track.addEventListener("mouseenter", stop);
   track.addEventListener("mouseleave", start);
   track.addEventListener("focusin", stop);
   track.addEventListener("focusout", start);
-  window.addEventListener("resize", function () { track.scrollLeft = copyWidth(); controls(); start(); });
+  window.addEventListener("resize", function () { track.scrollLeft = copyWidth(); start(); });
   document.addEventListener("visibilitychange", function () { document.hidden ? stop() : start(); });
   track.scrollLeft = copyWidth();
-  controls();
   start();
 }
 

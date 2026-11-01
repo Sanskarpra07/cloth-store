@@ -51,7 +51,7 @@ You can also use the **Live Server** extension in VS Code: right-click `index.ht
 
 | Page | File | Description | Rendered by |
 |---|---|---|---|
-| Home | `index.html` | Hero slider, category tiles, featured products, editorial banner, New Arrivals carousel, value props, testimonials, Instagram grid, newsletter | `renderHomePage()`, `setupProductCarousel()` |
+| Home | `index.html` | Hero slider, category tiles, featured products, editorial banner, New Arrivals carousel, value props, testimonials, auto-scrolling community photo carousel, newsletter | `renderHomePage()`, `setupProductCarousel()`, `setupInstagramCarousel()` |
 | Shop | `shop.html` | Editorial hero, filter sidebar, sorting, active filter tags, product grid, empty state | `renderShopPage()` |
 | Product detail | `product.html` | Gallery, colour and size pickers, quantity, add to bag, metadata, FAQ accordion, related products | `renderProductPage()` |
 | Cart | `cart.html` | Full shopping bag with editable quantities, remove, order summary | `renderCartPage()` |
@@ -78,6 +78,7 @@ All pages share the same announcement bar, navigation, slide-out cart drawer, an
 | Category tiles | Women, Men, and Accessories with live product counts |
 | Featured products | First 8 products rendered as a responsive grid |
 | New Arrivals carousel | Horizontal product carousel with circular looping, autoplay, arrows, and pause-on-interaction |
+| Community photo carousel | Homepage photos auto-scroll in a seamless loop; visitors can swipe on touchscreens or click and drag with a mouse. It has no arrow controls and pauses during interaction. |
 | Product catalog | 16 demo products across men, women, and accessories |
 | Shop filters | Category, product type, size, colour, and maximum price, plus sorting |
 | Active filter tags | Removable tags and a clear-all action |
@@ -220,6 +221,10 @@ The home page carousel renders each "new" product three times and starts in the 
 
 When scrolling reaches the third copy, the track jumps back by one copy width. Because the copies are identical, the jump is invisible and the carousel loops in both directions.
 
+### Community photo carousel
+
+The homepage "Wear It, Tag It" gallery keeps its centered heading and automatically scrolls the photo row. `setupInstagramCarousel()` creates two additional copies of the six photos so it can loop seamlessly in either direction. Visitors can swipe on touchscreens or click and drag with a mouse; there are no visible arrow controls. Autoplay pauses while the row is hovered, dragged, focused, or the browser tab is hidden. It stays off when reduced motion is enabled.
+
 Settings at the top of `main.js`:
 
 ```js
@@ -326,7 +331,7 @@ Keep `CAROUSEL_COPIES` at 3 or more. The loop logic assumes multiple identical c
 
 The demo uses Unsplash URLs in:
 
-- `index.html` — hero slides, category tiles, editorial image, testimonial avatars, Instagram grid
+- `index.html` — hero slides, category tiles, editorial image, testimonial avatars, Instagram photo carousel
 - `about.html`, `contact.html`, `blog.html`, `blog-single.html`, `login.html`, `register.html`
 - `assets/js/main.js` — product images and galleries
 
@@ -397,8 +402,8 @@ The stylesheet is divided into 27 numbered sections, listed in the banner commen
 - Design tokens and base styles
 - Typography and buttons
 - Announcement bar and navbar
-- Hero, category tiles, product cards, and carousel
-- Marquee, feature banner, editorial split, testimonials, Instagram grid
+- Hero, category tiles, product cards, New Arrivals carousel, and Instagram photo carousel
+- Marquee, feature banner, editorial split, testimonials, Instagram photo carousel
 - Newsletter and footer
 - Cart drawer, shop filters, product page
 - About, contact, cart, checkout, auth, blog, and error pages
