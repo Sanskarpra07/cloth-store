@@ -971,6 +971,34 @@ img { max-width: 100%; }
    ========================================================================== */
 
 .insta-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+.insta-carousel-track {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.insta-carousel-track::-webkit-scrollbar { display: none; }
+.insta-carousel-track > .insta-item {
+  flex: 0 0 calc((100% - 1rem) / 2);
+  max-width: calc((100% - 1rem) / 2);
+  scroll-snap-align: start;
+}
+@media (min-width: 768px) {
+  .insta-carousel-track > .insta-item {
+    flex-basis: calc((100% - 2rem) / 3);
+    max-width: calc((100% - 2rem) / 3);
+  }
+}
+@media (min-width: 992px) {
+  .insta-carousel-track { gap: 1.5rem; }
+  .insta-carousel-track > .insta-item {
+    flex-basis: calc((100% - 4.5rem) / 4);
+    max-width: calc((100% - 4.5rem) / 4);
+  }
+}
 .insta-item {
   position: relative;
   aspect-ratio: 1;
@@ -1541,7 +1569,6 @@ img { max-width: 100%; }
 @media (max-width: 991.98px) {
   .site-nav.nav-transparent { position: absolute; }
   .nav-link { margin: 6px 0; }
-  .insta-grid { grid-template-columns: repeat(3, 1fr); }
   .section-pad { padding-top: 64px; padding-bottom: 64px; }
   /* Slide-in reveals would scroll the page sideways on narrow screens,
      so use a simple vertical fade instead. */
