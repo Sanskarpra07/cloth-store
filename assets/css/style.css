@@ -30,6 +30,17 @@
    25. Responsive fixes      → shared breakpoint adjustments
    26. Shop page redesign    → editorial hero + filter sidebar
    27. Extra page components → cart, checkout, auth, blog, error
+
+   READING TIP
+   -----------
+   Sections 1–5 are the design system (tokens, base styles, type, buttons,
+   layout helpers). Sections 6–17 are the shared site chrome and the home
+   page. Sections 18–27 are page-specific styles. Edit the :root tokens
+   first when re-theming; most colours and spacing flow from there.
+
+   Layout mostly uses Bootstrap's grid classes in the HTML. This file adds
+   the editorial styling on top: spacing, typography, hover states, and the
+   responsive rules at the end of each section.
    ========================================================================== */
 
 
@@ -1495,6 +1506,10 @@ img { max-width: 100%; }
 
 /* ==========================================================================
    24. SCROLL REVEAL ANIMATIONS
+   --------------------------------------------------------------------------
+   Elements start hidden. setupRevealAnimations() in main.js adds .visible
+   when they enter the viewport. The nth-child delays below create the
+   staggered entrance for grids.
    ========================================================================== */
 
 .reveal {

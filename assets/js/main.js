@@ -1,6 +1,8 @@
 /* ==========================================================================
    DAURA & CO. — Main JavaScript
    --------------------------------------------------------------------------
+   This single file powers every interactive part of the storefront.
+
    HOW THIS FILE IS ORGANIZED (read top to bottom):
    1. PRODUCTS array      → all store data in one place
    2. Helper functions    → money, stars, shipping, product lookup
@@ -10,6 +12,24 @@
    6. Page renderers      → home, shop, product, cart, checkout
    7. Global behaviours   → navbar, carousel, forms, animations
    8. Boot                → runs once when the page finishes loading
+
+   THE BIG PICTURE
+   ---------------
+   PRODUCTS (static data)
+        │
+        ├── productCardHTML() ──→ home / shop / related product grids
+        │
+        └── Cart.add() ──→ localStorage("daura_cart")
+                              │
+                              ├── cart drawer (every page)
+                              ├── cart.html
+                              └── checkout.html
+
+   Each HTML page is a shell. JavaScript finds elements by their `id`
+   (for example #shopGrid or #productDetail) and fills them with markup.
+
+   For a guided tour, trace exercises, and a file-by-file map, open
+   CODE-GUIDE.md in the project root.
    ========================================================================== */
 
 
@@ -425,42 +445,48 @@ function shippingCost(subtotal) {
    3. PRODUCT CARD HTML — one template used on every page
    ========================================================================== */
 
+/**
+ * Builds the HTML for one product tile.
+ * Used by the home grid, shop grid, and related-products grid.
+ *
+ * @param {object} product - one object from the PRODUCTS array
+ * @returns {string} a Bootstrap column containing a .product-card
+ */
 function productCardHTML(product) {
-  // Decide badge markup ("New", "Sale" or nothing)
-  let badge = "";
-  if (product.badge === "new") badge = '<span class="product-badge badge-new">New</span>';
-  if (product.badge === "sale") badge = '<span class="product-badge badge-sale">Sale</span>';
+  // Badge markup: "New", "Sale", or nothing.
+  const badge =
+    product.badge === "new"
+      ? '<span class="product-badge badge-new">New</span>'
+      : product.badge === "sale"
+        ? '<span class="product-badge badge-sale">Sale</span>'
+        : "";
 
-  // Decide price markup (show old price struck through when on sale)
-  let priceHTML = "";
-  if (product.oldPrice) {
-    priceHTML =
-      '<span class="sale-price">' + formatMoney(product.price) + '</span>' +
-      '<span class="old-price">' + formatMoney(product.oldPrice) + '</span>';
-  } else {
-    priceHTML = formatMoney(product.price);
-  }
+  // Show the original price struck through only when the product is on sale.
+  const priceHTML = product.oldPrice
+    ? `<span class="sale-price">${formatMoney(product.price)}</span>
+       <span class="old-price">${formatMoney(product.oldPrice)}</span>`
+    : formatMoney(product.price);
 
-  return (
-    '<div class="col-6 col-md-4 col-lg-3">' +
-      '<div class="product-card mb-4">' +
-        '<div class="product-media-wrap">' +
-          '<a href="product.html?id=' + product.id + '" class="product-media">' +
-            badge +
-            '<img class="img-main" src="' + product.image + '" alt="' + product.name + '" loading="lazy">' +
-            '<img class="img-hover" src="' + product.imageHover + '" alt="' + product.name + ' alternate view" loading="lazy">' +
-          '</a>' +
-          '<button type="button" class="quick-add" data-add-id="' + product.id + '">+ Quick Add</button>' +
-        '</div>' +
-        '<div class="product-info">' +
-          '<div class="product-category">' + product.type + '</div>' +
-          '<h3 class="product-name"><a href="product.html?id=' + product.id + '">' + product.name + '</a></h3>' +
-          '<div class="product-price">' + priceHTML + '</div>' +
-          '<div class="product-rating">' + renderStars(product.rating) + '</div>' +
-        '</div>' +
-      '</div>' +
-    '</div>'
-  );
+  return `
+    <div class="col-6 col-md-4 col-lg-3">
+      <div class="product-card mb-4">
+        <div class="product-media-wrap">
+          <a href="product.html?id=${product.id}" class="product-media">
+            ${badge}
+            <img class="img-main" src="${product.image}" alt="${product.name}" loading="lazy">
+            <img class="img-hover" src="${product.imageHover}" alt="${product.name} alternate view" loading="lazy">
+          </a>
+          <button type="button" class="quick-add" data-add-id="${product.id}">+ Quick Add</button>
+        </div>
+        <div class="product-info">
+          <div class="product-category">${product.type}</div>
+          <h3 class="product-name"><a href="product.html?id=${product.id}">${product.name}</a></h3>
+          <div class="product-price">${priceHTML}</div>
+          <div class="product-rating">${renderStars(product.rating)}</div>
+        </div>
+      </div>
+    </div>
+  `;
 }
 
 
@@ -468,6 +494,22 @@ function productCardHTML(product) {
    4. CART SYSTEM — works with localStorage so the cart survives refresh
    ========================================================================== */
 
+/*
+  A cart line is stored as:
+
+  {
+    id: 1,                  // product id
+    name: "Midnight Tee",   // copied so the cart works without PRODUCTS
+    price: 49,              // price at the time of adding
+    image: "...",           // card image
+    size: "M",
+    color: "#14100e",
+    qty: 2
+  }
+
+  Identity = id + size + color. Adding the same product in a different
+  size or colour creates a separate line instead of merging quantities.
+*/
 const Cart = {
   // Read the saved cart from the browser (or start empty)
   read: function () {
@@ -559,65 +601,73 @@ const Cart = {
 
     // Empty cart state
     if (items.length === 0) {
-      list.innerHTML =
-        '<div class="cart-empty">' +
-          '<i class="bi bi-bag"></i>' +
-          '<p class="mb-1" style="font-family:var(--font-display);font-size:18px;color:var(--ink)">Your bag is empty</p>' +
-          '<p style="font-size:13px">Add something you love and it will show up here.</p>' +
-        '</div>';
+      list.innerHTML = `
+        <div class="cart-empty">
+          <i class="bi bi-bag"></i>
+          <p class="mb-1" style="font-family:var(--font-display);font-size:18px;color:var(--ink)">Your bag is empty</p>
+          <p style="font-size:13px">Add something you love and it will show up here.</p>
+        </div>
+      `;
       footer.style.display = "none";
       return;
     }
 
-    // Build one row per cart line
+    // Build one row per cart line. `index` is the line's position in the
+    // saved array, which is how the qty/remove buttons identify their row.
     list.innerHTML = items.map(function (item, index) {
-      return (
-        '<div class="cart-item">' +
-          '<img src="' + item.image + '" alt="' + item.name + '">' +
-          '<div>' +
-            '<div class="cart-item-name">' + item.name + '</div>' +
-            '<div class="cart-item-meta">Size: ' + item.size + ' · Color: ' + item.color + '</div>' +
-            '<div class="qty-control">' +
-              '<button data-qty-index="' + index + '" data-qty-delta="-1" aria-label="Decrease quantity">−</button>' +
-              '<span>' + item.qty + '</span>' +
-              '<button data-qty-index="' + index + '" data-qty-delta="1" aria-label="Increase quantity">+</button>' +
-            '</div>' +
-            '<button class="cart-item-remove d-block" data-remove-index="' + index + '">Remove</button>' +
-          '</div>' +
-          '<div class="cart-item-price">' + formatMoney(item.price * item.qty) + '</div>' +
-        '</div>'
-      );
+      return `
+        <div class="cart-item">
+          <img src="${item.image}" alt="${item.name}">
+          <div>
+            <div class="cart-item-name">${item.name}</div>
+            <div class="cart-item-meta">Size: ${item.size} · Color: ${item.color}</div>
+            <div class="qty-control">
+              <button data-qty-index="${index}" data-qty-delta="-1" aria-label="Decrease quantity">−</button>
+              <span>${item.qty}</span>
+              <button data-qty-index="${index}" data-qty-delta="1" aria-label="Increase quantity">+</button>
+            </div>
+            <button class="cart-item-remove d-block" data-remove-index="${index}">Remove</button>
+          </div>
+          <div class="cart-item-price">${formatMoney(item.price * item.qty)}</div>
+        </div>
+      `;
     }).join("");
 
     // Totals footer
     const subtotal = this.subtotal();
     const shipping = shippingCost(subtotal);
     footer.style.display = "block";
-    footer.innerHTML =
-      '<div class="cart-row"><span>Subtotal</span><span>' + formatMoney(subtotal) + '</span></div>' +
-      '<div class="cart-row"><span>Shipping</span><span>' + (shipping === 0 ? "Free" : formatMoney(shipping)) + '</span></div>' +
-      '<div class="cart-row total"><span>Total</span><span>' + formatMoney(subtotal + shipping) + '</span></div>' +
-      '<a class="btn btn-ink" href="checkout.html">Proceed to Checkout</a>' +
-      '<a class="btn btn-outline-ink" href="cart.html">View Shopping Bag</a>' +
-      '<button class="btn btn-outline-ink" data-bs-dismiss="offcanvas">Continue Shopping</button>' +
-      '<p class="cart-note">Free shipping on orders over $100 · 30-day returns</p>';
+    footer.innerHTML = `
+      <div class="cart-row"><span>Subtotal</span><span>${formatMoney(subtotal)}</span></div>
+      <div class="cart-row"><span>Shipping</span><span>${shipping === 0 ? "Free" : formatMoney(shipping)}</span></div>
+      <div class="cart-row total"><span>Total</span><span>${formatMoney(subtotal + shipping)}</span></div>
+      <a class="btn btn-ink" href="checkout.html">Proceed to Checkout</a>
+      <a class="btn btn-outline-ink" href="cart.html">View Shopping Bag</a>
+      <button class="btn btn-outline-ink" data-bs-dismiss="offcanvas">Continue Shopping</button>
+      <p class="cart-note">Free shipping on orders over $100 · 30-day returns</p>
+    `;
   }
 };
 
-// Make the cart drawer open when any "cart" button is clicked (works on every page)
+/**
+ * Injects the offcanvas cart drawer into every page and wires its buttons.
+ * The drawer markup lives here instead of in each HTML file so it only has
+ * to be maintained once. Runs once on DOMContentLoaded.
+ */
 function setupCartDrawer() {
-  // Build the drawer HTML and push it into the page
-  const drawerHTML =
-    '<div class="offcanvas offcanvas-end cart-drawer" tabindex="-1" id="cartDrawer" aria-labelledby="cartDrawerLabel">' +
-      '<div class="offcanvas-header">' +
-        '<h5 class="offcanvas-title" id="cartDrawerLabel">Shopping Bag (' + Cart.count() + ')</h5>' +
-        '<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>' +
-      '</div>' +
-      '<div class="offcanvas-body">' +
-        '<div class="cart-items" id="cartItems"></div>' +
-        '<div class="cart-footer" id="cartFooter"></div>' +
-      '</div>' +
-    '</div>';
+  // Build the drawer HTML and push it into the page.
+  const drawerHTML = `
+    <div class="offcanvas offcanvas-end cart-drawer" tabindex="-1" id="cartDrawer" aria-labelledby="cartDrawerLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="cartDrawerLabel">Shopping Bag (${Cart.count()})</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <div class="cart-items" id="cartItems"></div>
+        <div class="cart-footer" id="cartFooter"></div>
+      </div>
+    </div>
+  `;
   document.body.insertAdjacentHTML("beforeend", drawerHTML);
 
   Cart.updateBadge();
@@ -650,15 +700,22 @@ function setupCartDrawer() {
    5. TOAST NOTIFICATION — the little "added to bag" popup
    ========================================================================== */
 
+/**
+ * Shows a temporary Bootstrap toast in the top-right corner.
+ * Used for "added to bag" confirmations and demo form submissions.
+ *
+ * @param {string} message - plain text to show inside the toast
+ */
 function showToast(message) {
-  // Build a Bootstrap toast and show it top-right
+  // Build a Bootstrap toast and show it top-right.
   const id = "toast-" + Date.now();
-  const html =
-    '<div class="toast toast-v align-middle" role="alert" aria-live="assertive" aria-atomic="true" id="' + id + '">' +
-      '<div class="toast-body">' +
-        '<i class="bi bi-check-circle-fill"></i> ' + message +
-      '</div>' +
-    '</div>';
+  const html = `
+    <div class="toast toast-v align-middle" role="alert" aria-live="assertive" aria-atomic="true" id="${id}">
+      <div class="toast-body">
+        <i class="bi bi-check-circle-fill"></i> ${message}
+      </div>
+    </div>
+  `;
 
   let container = document.querySelector(".toast-container");
   if (!container) {
@@ -799,65 +856,78 @@ function renderShopPage() {
   }
 
   // Wraps one filter section in a collapsible header (like ASOS / Zara).
+  // `open` decides whether the section starts expanded.
   function group(title, id, inner, open) {
-    return '' +
-      '<div class="filter-group">' +
-        '<button class="filter-group-title' + (open ? '' : ' collapsed') + '" type="button" ' +
-          'data-bs-toggle="collapse" data-bs-target="#' + id + '" ' +
-          'aria-expanded="' + (open ? 'true' : 'false') + '" aria-controls="' + id + '">' +
-          '<span>' + title + '</span><i class="bi bi-chevron-down"></i>' +
-        '</button>' +
-        '<div class="collapse' + (open ? ' show' : '') + '" id="' + id + '">' +
-          '<div class="filter-group-body">' + inner + '</div>' +
-        '</div>' +
-      '</div>';
+    return `
+      <div class="filter-group">
+        <button class="filter-group-title${open ? "" : " collapsed"}" type="button"
+                data-bs-toggle="collapse" data-bs-target="#${id}"
+                aria-expanded="${open ? "true" : "false"}" aria-controls="${id}">
+          <span>${title}</span><i class="bi bi-chevron-down"></i>
+        </button>
+        <div class="collapse${open ? " show" : ""}" id="${id}">
+          <div class="filter-group-body">${inner}</div>
+        </div>
+      </div>
+    `;
   }
 
   function buildFiltersHTML() {
     // Department rows (All / Women / Men / Accessories)
     const catHTML = categories.map(function (c) {
       const active = state.category === c.value ? " active" : "";
-      return '<li><button class="filter-list-btn' + active + '" data-cat="' + c.value + '">' +
-               '<span>' + c.label + '</span>' +
-               '<span class="count">' + categoryCount(c.value) + '</span>' +
-             '</button></li>';
+      return `
+        <li>
+          <button class="filter-list-btn${active}" data-cat="${c.value}">
+            <span>${c.label}</span>
+            <span class="count">${categoryCount(c.value)}</span>
+          </button>
+        </li>
+      `;
     }).join("");
 
     // Product-type rows — only the types that exist in the current department
     const typeHTML = availableTypes().map(function (t) {
       const active = state.type === t ? " active" : "";
-      return '<li><button class="filter-list-btn' + active + '" data-type="' + t + '">' +
-               '<span>' + t + '</span>' +
-               '<span class="count">' + typeCount(t) + '</span>' +
-             '</button></li>';
+      return `
+        <li>
+          <button class="filter-list-btn${active}" data-type="${t}">
+            <span>${t}</span>
+            <span class="count">${typeCount(t)}</span>
+          </button>
+        </li>
+      `;
     }).join("");
 
     // Size buttons
     const sizeHTML = availableSizes().map(function (s) {
       const active = state.sizes.indexOf(s) > -1 ? " active" : "";
-      return '<button class="size-filter-btn' + active + '" data-size="' + s + '">' + s + '</button>';
+      return `<button class="size-filter-btn${active}" data-size="${s}">${s}</button>`;
     }).join("");
 
     // Colour swatches
     const colorHTML = availableColors().map(function (c) {
       const active = state.colors.indexOf(c) > -1 ? " active" : "";
-      return '<button class="color-filter-btn' + active + '" style="background:' + c + '" ' +
-               'data-color="' + c + '" aria-label="Filter by colour ' + c + '"></button>';
+      return `<button class="color-filter-btn${active}" style="background:${c}" data-color="${c}" aria-label="Filter by colour ${c}"></button>`;
     }).join("");
 
     // Price slider
-    const priceHTML =
-      '<div class="price-labels"><span>' + formatMoney(minPrice) + '</span>' +
-        '<strong id="priceVal">' + formatMoney(state.maxPrice) + '</strong></div>' +
-      '<input type="range" class="range-ink" id="priceRange" min="' + minPrice + '" max="' + maxPrice + '" ' +
-        'step="10" value="' + state.maxPrice + '" aria-label="Maximum price">';
+    const priceHTML = `
+      <div class="price-labels">
+        <span>${formatMoney(minPrice)}</span>
+        <strong id="priceVal">${formatMoney(state.maxPrice)}</strong>
+      </div>
+      <input type="range" class="range-ink" id="priceRange" min="${minPrice}" max="${maxPrice}"
+             step="10" value="${state.maxPrice}" aria-label="Maximum price">
+    `;
 
-    return '' +
-      group("Category", "fg-category", '<ul class="filter-list">' + catHTML + '</ul>', true) +
-      group("Product Type", "fg-type", '<ul class="filter-list">' + typeHTML + '</ul>', true) +
-      group("Size", "fg-size", '<div class="size-filter-grid">' + sizeHTML + '</div>', false) +
-      group("Colour", "fg-colour", '<div class="color-filter-grid">' + colorHTML + '</div>', false) +
-      group("Price", "fg-price", priceHTML, false);
+    return [
+      group("Category", "fg-category", `<ul class="filter-list">${catHTML}</ul>`, true),
+      group("Product Type", "fg-type", `<ul class="filter-list">${typeHTML}</ul>`, true),
+      group("Size", "fg-size", `<div class="size-filter-grid">${sizeHTML}</div>`, false),
+      group("Colour", "fg-colour", `<div class="color-filter-grid">${colorHTML}</div>`, false),
+      group("Price", "fg-price", priceHTML, false)
+    ].join("");
   }
 
   function refreshSidebar() {
@@ -907,18 +977,21 @@ function renderShopPage() {
 
     if (!tags.length) { activeWrap.innerHTML = ""; return; }
 
-    activeWrap.innerHTML =
-      '<span class="af-label">Filters:</span>' +
-      tags.map(function (t) {
+    activeWrap.innerHTML = `
+      <span class="af-label">Filters:</span>
+      ${tags.map(function (t) {
         const dot = t.swatch
-          ? '<span class="swatch" style="background:' + t.swatch + '"></span>'
+          ? `<span class="swatch" style="background:${t.swatch}"></span>`
           : "";
-        return '<span class="filter-tag">' + dot + t.label +
-                 '<button data-remove-type="' + t.type + '" data-remove-value="' + (t.value || "") + '" ' +
-                   'aria-label="Remove filter">&times;</button>' +
-               '</span>';
-      }).join("") +
-      '<button class="filter-tag-clear" id="clearFilters">Clear all</button>';
+        return `
+          <span class="filter-tag">
+            ${dot}${t.label}
+            <button data-remove-type="${t.type}" data-remove-value="${t.value || ""}" aria-label="Remove filter">&times;</button>
+          </span>
+        `;
+      }).join("")}
+      <button class="filter-tag-clear" id="clearFilters">Clear all</button>
+    `;
   }
 
   function applyFilters() {
@@ -1052,86 +1125,101 @@ function renderProductPage() {
   let qty = 1;
 
   // Price markup (with optional old price)
-  let priceHTML = product.oldPrice
-    ? '<span class="sale-price" style="color:var(--sale)">' + formatMoney(product.price) + '</span> ' +
-      '<span class="old-price" style="font-size:16px">' + formatMoney(product.oldPrice) + '</span>'
+  const priceHTML = product.oldPrice
+    ? `<span class="sale-price" style="color:var(--sale)">${formatMoney(product.price)}</span>
+       <span class="old-price" style="font-size:16px">${formatMoney(product.oldPrice)}</span>`
     : formatMoney(product.price);
 
-  // Build the page in two columns: gallery on the left, product info on the right.
-  wrap.innerHTML =
-    // Left column: main image + thumbnails.
-    '<div class="col-lg-7 mb-4 mb-lg-0">' +
-      '<div class="product-gallery-main">' +
-        '<img id="galleryMain" src="' + product.gallery[0] + '" alt="' + product.name + '">' +
-      '</div>' +
-      '<div class="gallery-thumbs">' +
-        product.gallery.map(function (src, i) {
-          return '<button class="gallery-thumb' + (i === 0 ? " active" : "") + '" data-gallery-src="' + src + '">' +
-                   '<img src="' + src + '" alt="View ' + (i + 1) + '">' +
-                 '</button>';
-        }).join("") +
-      '</div>' +
-    '</div>' +
+  // Build the repeated option buttons first so the main template stays readable.
+  const galleryThumbs = product.gallery.map(function (src, i) {
+    return `
+      <button class="gallery-thumb${i === 0 ? " active" : ""}" data-gallery-src="${src}">
+        <img src="${src}" alt="View ${i + 1}">
+      </button>
+    `;
+  }).join("");
 
-    // Right column: name, price, options, quantity, and add-to-bag.
-    '<div class="col-lg-5 product-detail">' +
-      '<div class="pd-category"><a href="shop.html?category=' + product.category + '">' + categoryLabel(product.category) + '</a> · <a href="shop.html?type=' + encodeURIComponent(product.type) + '">' + product.type + '</a> · <span style="color:var(--muted)">SKU DCO-0' + product.id + '</span></div>' +
-      '<h1 class="pd-title">' + product.name + '</h1>' +
-      '<div class="product-rating mb-2">' + renderStars(product.rating) + ' <span style="color:var(--muted);font-size:12px;letter-spacing:0">(48 reviews)</span></div>' +
-      '<div class="pd-price">' + priceHTML + '</div>' +
-      '<p class="pd-desc">' + product.description + '</p>' +
+  const colorButtons = product.colors.map(function (c, i) {
+    return `<button class="color-btn${i === 0 ? " active" : ""}" style="background:${c}" data-color="${c}" aria-label="Color ${c}"></button>`;
+  }).join("");
 
-      '<span class="option-label">Color</span>' +
-      '<div class="color-options" id="colorOptions">' +
-        product.colors.map(function (c, i) {
-          return '<button class="color-btn' + (i === 0 ? " active" : "") + '" style="background:' + c + '" data-color="' + c + '" aria-label="Color ' + c + '"></button>';
-        }).join("") +
-      '</div>' +
+  const sizeButtons = product.sizes.map(function (s, i) {
+    return `<button class="size-btn${i === 0 ? " active" : ""}" data-size="${s}">${s}</button>`;
+  }).join("");
 
-      '<span class="option-label">Size: <span class="selected-val" id="sizeLabel">' + selectedSize + '</span></span>' +
-      '<div class="size-options" id="sizeOptions">' +
-        product.sizes.map(function (s, i) {
-          return '<button class="size-btn' + (i === 0 ? " active" : "") + '" data-size="' + s + '">' + s + '</button>';
-        }).join("") +
-      '</div>' +
+  // Two columns: gallery on the left, product info on the right.
+  wrap.innerHTML = `
+    <div class="col-lg-7 mb-4 mb-lg-0">
+      <div class="product-gallery-main">
+        <img id="galleryMain" src="${product.gallery[0]}" alt="${product.name}">
+      </div>
+      <div class="gallery-thumbs">${galleryThumbs}</div>
+    </div>
 
-      '<div class="pd-actions">' +
-        '<div class="qty-control">' +
-          '<button id="pdQtyMinus" aria-label="Decrease quantity">−</button>' +
-          '<span id="pdQty">' + qty + '</span>' +
-          '<button id="pdQtyPlus" aria-label="Increase quantity">+</button>' +
-        '</div>' +
-        '<button class="btn btn-ink" id="pdAddToCart">Add to Bag — ' + formatMoney(product.price) + '</button>' +
-      '</div>' +
+    <div class="col-lg-5 product-detail">
+      <div class="pd-category">
+        <a href="shop.html?category=${product.category}">${categoryLabel(product.category)}</a> ·
+        <a href="shop.html?type=${encodeURIComponent(product.type)}">${product.type}</a> ·
+        <span style="color:var(--muted)">SKU DCO-0${product.id}</span>
+      </div>
+      <h1 class="pd-title">${product.name}</h1>
+      <div class="product-rating mb-2">
+        ${renderStars(product.rating)}
+        <span style="color:var(--muted);font-size:12px;letter-spacing:0">(48 reviews)</span>
+      </div>
+      <div class="pd-price">${priceHTML}</div>
+      <p class="pd-desc">${product.description}</p>
 
-      '<ul class="pd-meta-list">' +
-        '<li><strong>SKU</strong> DCO-0' + product.id + '</li>' +
-        '<li><strong>Category</strong> ' + product.type + '</li>' +
-        '<li><strong>Shipping</strong> Free over $100 · 3–5 days</li>' +
-        '<li><strong>Returns</strong> 30-day easy returns</li>' +
-      '</ul>' +
+      <span class="option-label">Color</span>
+      <div class="color-options" id="colorOptions">${colorButtons}</div>
 
-      '<div class="accordion accordion-flush mt-4" id="pdAccordion">' +
-        '<div class="accordion-item">' +
-          '<h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#accDetails">Details & Fit</button></h2>' +
-          '<div id="accDetails" class="accordion-collapse collapse" data-bs-parent="#pdAccordion">' +
-            '<div class="accordion-body">Model is 6\'1" / 185cm and wears size M. True to size — take your normal size for a regular fit, size up for a relaxed look. Fabric has medium stretch.</div>' +
-          '</div>' +
-        '</div>' +
-        '<div class="accordion-item">' +
-          '<h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#accCare">Materials & Care</button></h2>' +
-          '<div id="accCare" class="accordion-collapse collapse" data-bs-parent="#pdAccordion">' +
-            '<div class="accordion-body">Made from premium natural fibres. Machine wash cold with like colors, tumble dry low. Do not bleach. Warm iron if needed.</div>' +
-          '</div>' +
-        '</div>' +
-        '<div class="accordion-item">' +
-          '<h2 class="accordion-header"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#accShip">Shipping & Returns</button></h2>' +
-          '<div id="accShip" class="accordion-collapse collapse" data-bs-parent="#pdAccordion">' +
-            '<div class="accordion-body">Free standard shipping on orders over $100. Express options available at checkout. Returns accepted within 30 days in original condition.</div>' +
-          '</div>' +
-        '</div>' +
-      '</div>' +
-    '</div>';
+      <span class="option-label">Size: <span class="selected-val" id="sizeLabel">${selectedSize}</span></span>
+      <div class="size-options" id="sizeOptions">${sizeButtons}</div>
+
+      <div class="pd-actions">
+        <div class="qty-control">
+          <button id="pdQtyMinus" aria-label="Decrease quantity">−</button>
+          <span id="pdQty">${qty}</span>
+          <button id="pdQtyPlus" aria-label="Increase quantity">+</button>
+        </div>
+        <button class="btn btn-ink" id="pdAddToCart">Add to Bag — ${formatMoney(product.price)}</button>
+      </div>
+
+      <ul class="pd-meta-list">
+        <li><strong>SKU</strong> DCO-0${product.id}</li>
+        <li><strong>Category</strong> ${product.type}</li>
+        <li><strong>Shipping</strong> Free over $100 · 3–5 days</li>
+        <li><strong>Returns</strong> 30-day easy returns</li>
+      </ul>
+
+      <div class="accordion accordion-flush mt-4" id="pdAccordion">
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#accDetails">Details & Fit</button>
+          </h2>
+          <div id="accDetails" class="accordion-collapse collapse" data-bs-parent="#pdAccordion">
+            <div class="accordion-body">Model is 6'1" / 185cm and wears size M. True to size — take your normal size for a regular fit, size up for a relaxed look. Fabric has medium stretch.</div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#accCare">Materials & Care</button>
+          </h2>
+          <div id="accCare" class="accordion-collapse collapse" data-bs-parent="#pdAccordion">
+            <div class="accordion-body">Made from premium natural fibres. Machine wash cold with like colors, tumble dry low. Do not bleach. Warm iron if needed.</div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#accShip">Shipping & Returns</button>
+          </h2>
+          <div id="accShip" class="accordion-collapse collapse" data-bs-parent="#pdAccordion">
+            <div class="accordion-body">Free standard shipping on orders over $100. Express options available at checkout. Returns accepted within 30 days in original condition.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
 
   // --- Wire up the interactivity ---
 
@@ -1206,15 +1294,20 @@ function renderCartPage() {
 
   // Empty state: show a friendly message and disable checkout.
   if (!items.length) {
-    wrap.innerHTML =
-      '<div class="cart-empty cart-empty-page">' +
-        '<i class="bi bi-bag"></i>' +
-        '<p class="mb-1" style="font-family:var(--font-display);font-size:24px;color:var(--ink)">Nothing here yet</p>' +
-        '<p style="font-size:14px;margin-bottom:24px">Add something you love and it will appear right here.</p>' +
-        '<a href="shop.html" class="btn btn-ink">Start Shopping</a>' +
-      '</div>';
+    wrap.innerHTML = `
+      <div class="cart-empty cart-empty-page">
+        <i class="bi bi-bag"></i>
+        <p class="mb-1" style="font-family:var(--font-display);font-size:24px;color:var(--ink)">Nothing here yet</p>
+        <p style="font-size:14px;margin-bottom:24px">Add something you love and it will appear right here.</p>
+        <a href="shop.html" class="btn btn-ink">Start Shopping</a>
+      </div>
+    `;
     if (summary) {
-      summary.innerHTML = '<p class="text-muted-warm mb-0" style="font-size:13px">Your order summary will appear once you add a piece to your bag.</p>';
+      summary.innerHTML = `
+        <p class="text-muted-warm mb-0" style="font-size:13px">
+          Your order summary will appear once you add a piece to your bag.
+        </p>
+      `;
     }
     if (checkoutBtn) {
       checkoutBtn.classList.add("disabled");
@@ -1232,34 +1325,37 @@ function renderCartPage() {
 
   // One row per cart item, with quantity controls and a remove button.
   wrap.innerHTML = items.map(function (item, index) {
-    return '<div class="cart-line">' +
-      '<a href="product.html?id=' + item.id + '" class="cart-line-img">' +
-        '<img src="' + item.image + '" alt="' + item.name + '">' +
-      '</a>' +
-      '<div class="cart-line-info">' +
-        '<a href="product.html?id=' + item.id + '" class="cart-line-name">' + item.name + '</a>' +
-        '<div class="cart-line-meta">Size: ' + item.size + ' · Colour: ' + item.color + '</div>' +
-        '<div class="cart-line-actions">' +
-          '<div class="qty-control">' +
-            '<button data-cp-qty="-1" data-cp-index="' + index + '" aria-label="Decrease quantity">−</button>' +
-            '<span>' + item.qty + '</span>' +
-            '<button data-cp-qty="1" data-cp-index="' + index + '" aria-label="Increase quantity">+</button>' +
-          '</div>' +
-          '<button class="cart-item-remove" data-cp-remove="' + index + '">Remove</button>' +
-        '</div>' +
-      '</div>' +
-      '<div class="cart-line-price">' + formatMoney(item.price * item.qty) + '</div>' +
-    '</div>';
+    return `
+      <div class="cart-line">
+        <a href="product.html?id=${item.id}" class="cart-line-img">
+          <img src="${item.image}" alt="${item.name}">
+        </a>
+        <div class="cart-line-info">
+          <a href="product.html?id=${item.id}" class="cart-line-name">${item.name}</a>
+          <div class="cart-line-meta">Size: ${item.size} · Colour: ${item.color}</div>
+          <div class="cart-line-actions">
+            <div class="qty-control">
+              <button data-cp-qty="-1" data-cp-index="${index}" aria-label="Decrease quantity">−</button>
+              <span>${item.qty}</span>
+              <button data-cp-qty="1" data-cp-index="${index}" aria-label="Increase quantity">+</button>
+            </div>
+            <button class="cart-item-remove" data-cp-remove="${index}">Remove</button>
+          </div>
+        </div>
+        <div class="cart-line-price">${formatMoney(item.price * item.qty)}</div>
+      </div>
+    `;
   }).join("");
 
   // Order summary: subtotal, shipping, and final total.
   const subtotal = Cart.subtotal();
   const shipping = shippingCost(subtotal);
   if (summary) {
-    summary.innerHTML =
-      '<div class="summary-row"><span>Subtotal</span><span>' + formatMoney(subtotal) + '</span></div>' +
-      '<div class="summary-row"><span>Shipping</span><span>' + (shipping === 0 ? "Free" : formatMoney(shipping)) + '</span></div>' +
-      '<div class="summary-row total"><span>Total</span><span>' + formatMoney(subtotal + shipping) + '</span></div>';
+    summary.innerHTML = `
+      <div class="summary-row"><span>Subtotal</span><span>${formatMoney(subtotal)}</span></div>
+      <div class="summary-row"><span>Shipping</span><span>${shipping === 0 ? "Free" : formatMoney(shipping)}</span></div>
+      <div class="summary-row total"><span>Total</span><span>${formatMoney(subtotal + shipping)}</span></div>
+    `;
   }
 
   // Quantity and remove buttons inside the rendered cart rows.
@@ -1285,13 +1381,14 @@ function renderCheckoutPage() {
 
   // Empty bag: explain what to do and disable the submit button.
   if (!items.length) {
-    summary.innerHTML =
-      '<div class="cart-empty cart-empty-mini">' +
-        '<i class="bi bi-bag"></i>' +
-        '<p class="mb-1" style="font-family:var(--font-display);font-size:20px;color:var(--ink)">Your bag is empty</p>' +
-        '<p style="font-size:13px">Add a piece before checking out.</p>' +
-        '<a href="shop.html" class="btn btn-outline-ink">Shop the Collection</a>' +
-      '</div>';
+    summary.innerHTML = `
+      <div class="cart-empty cart-empty-mini">
+        <i class="bi bi-bag"></i>
+        <p class="mb-1" style="font-family:var(--font-display);font-size:20px;color:var(--ink)">Your bag is empty</p>
+        <p style="font-size:13px">Add a piece before checking out.</p>
+        <a href="shop.html" class="btn btn-outline-ink">Shop the Collection</a>
+      </div>
+    `;
     if (submit) submit.disabled = true;
     return;
   }
@@ -1302,17 +1399,20 @@ function renderCheckoutPage() {
   const subtotal = Cart.subtotal();
   const shipping = shippingCost(subtotal);
 
-  summary.innerHTML =
-    items.map(function (item) {
-      return '<div class="co-line">' +
-        '<img src="' + item.image + '" alt="' + item.name + '">' +
-        '<div><strong>' + item.name + '</strong><small>Size ' + item.size + ' · Qty ' + item.qty + '</small></div>' +
-        '<span>' + formatMoney(item.price * item.qty) + '</span>' +
-      '</div>';
-    }).join("") +
-    '<div class="summary-row mt-3"><span>Subtotal</span><span>' + formatMoney(subtotal) + '</span></div>' +
-    '<div class="summary-row"><span>Shipping</span><span>' + (shipping === 0 ? "Free" : formatMoney(shipping)) + '</span></div>' +
-    '<div class="summary-row total"><span>Total</span><span>' + formatMoney(subtotal + shipping) + '</span></div>';
+  summary.innerHTML = `
+    ${items.map(function (item) {
+      return `
+        <div class="co-line">
+          <img src="${item.image}" alt="${item.name}">
+          <div><strong>${item.name}</strong><small>Size ${item.size} · Qty ${item.qty}</small></div>
+          <span>${formatMoney(item.price * item.qty)}</span>
+        </div>
+      `;
+    }).join("")}
+    <div class="summary-row mt-3"><span>Subtotal</span><span>${formatMoney(subtotal)}</span></div>
+    <div class="summary-row"><span>Shipping</span><span>${shipping === 0 ? "Free" : formatMoney(shipping)}</span></div>
+    <div class="summary-row total"><span>Total</span><span>${formatMoney(subtotal + shipping)}</span></div>
+  `;
 }
 
 
@@ -1320,7 +1420,11 @@ function renderCheckoutPage() {
    7. GLOBAL BEHAVIOURS — run on every page
    ========================================================================== */
 
-/** Quick-add buttons (delegated: also works for grids rendered later) */
+/**
+ * Handles every "+ Quick Add" button with one delegated click listener.
+ * Delegation means the buttons work even when a grid is rendered later
+ * (for example, after the shop filters change the results).
+ */
 function setupQuickAdd() {
   document.addEventListener("click", function (event) {
     const btn = event.target.closest("[data-add-id]");
@@ -1334,7 +1438,11 @@ function setupQuickAdd() {
   });
 }
 
-/** Keep the transparent nav directly below the announcement bar, even when it wraps */
+/**
+ * Measures the announcement bar and stores its height in the CSS variable
+ * --announcement-height. The transparent hero navbar uses that variable so
+ * it always sits directly below the bar, even when the bar wraps on mobile.
+ */
 function setupTransparentNavOffset() {
   const announcement = document.querySelector(".announcement");
   if (!announcement) return;
@@ -1349,7 +1457,11 @@ function setupTransparentNavOffset() {
   if ("ResizeObserver" in window) new ResizeObserver(sync).observe(announcement);
 }
 
-/** Navbar: add .is-scrolled after the user scrolls past 60px */
+/**
+ * Switches the navbar between its transparent and solid states.
+ * Home page: transparent over the hero, solid after 60px.
+ * Inner pages: always solid, with a small shadow after 10px.
+ */
 function setupNavbarScroll() {
   const nav = document.querySelector(".site-nav");
   if (!nav) return;
@@ -1373,7 +1485,10 @@ function setupNavbarScroll() {
   onScroll();
 }
 
-/** Back-to-top button visibility */
+/**
+ * Shows the floating back-to-top button after 500px of scrolling and
+ * smoothly returns the page to the top when it is clicked.
+ */
 function setupBackToTop() {
   const btn = document.getElementById("backToTop");
   if (!btn) return;
@@ -1552,7 +1667,11 @@ function setupProductCarousel() {
   startAutoplay();
 }
 
-/** Scroll reveal animations (IntersectionObserver — very efficient) */
+/**
+ * Adds the .visible class the first time a .reveal or .reveal-stagger
+ * element enters the viewport. IntersectionObserver avoids scroll handlers,
+ * and unobserve() keeps the animation from replaying.
+ */
 function setupRevealAnimations() {
   const targets = document.querySelectorAll(".reveal, .reveal-stagger");
   if (!targets.length) return;
@@ -1569,7 +1688,11 @@ function setupRevealAnimations() {
   targets.forEach(function (el) { observer.observe(el); });
 }
 
-/** Newsletter + contact forms (demo only — no real backend) */
+/**
+ * Wires every demo form. None of these send data to a server:
+ * they prevent the default submit, show a toast, and sometimes redirect.
+ * See the Forms table in README.md for the exact behaviour of each form.
+ */
 function setupDemoForms() {
   document.querySelectorAll(".js-newsletter").forEach(function (form) {
     form.addEventListener("submit", function (event) {
@@ -1624,7 +1747,7 @@ function setupDemoForms() {
   }
 }
 
-/** Fills footer year automatically so it never goes out of date */
+/** Fills every .js-year element with the current year (footer copyright). */
 function setupFooterYear() {
   document.querySelectorAll(".js-year").forEach(function (el) {
     el.textContent = new Date().getFullYear();

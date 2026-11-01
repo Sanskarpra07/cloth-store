@@ -122,6 +122,7 @@ cloth-store/
 ├── blog.html               Journal landing page
 ├── blog-single.html        Journal article page
 ├── error.html              Custom 404 page
+├── CODE-GUIDE.md           Guided code walkthrough and study exercises
 ├── assets/
 │   ├── css/
 │   │   └── style.css       Entire design system and page styles
@@ -373,6 +374,8 @@ There is no `package.json`, bundler, or compile step.
 ---
 
 ## Code Organization
+
+> For a guided tour, data-flow diagrams, trace exercises, and a glossary, see **[CODE-GUIDE.md](CODE-GUIDE.md)**.
 
 ### `assets/js/main.js`
 
