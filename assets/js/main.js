@@ -1667,6 +1667,86 @@ function setupProductCarousel() {
   startAutoplay();
 }
 
+/** Loop the homepage community photos using the same controls as New Arrivals. */
+function setupInstagramCarousel() {
+  const track = document.getElementById("instaGrid");
+  if (!track || !track.children.length) return;
+
+  const prevButton = document.querySelector('[data-carousel-prev="instaGrid"]');
+  const nextButton = document.querySelector('[data-carousel-next="instaGrid"]');
+  if (!prevButton || !nextButton) return;
+
+  const originalItems = Array.from(track.children);
+  const cardsPerCopy = originalItems.length;
+  const copy = originalItems.map(function (item) {
+    const clone = item.cloneNode(true);
+    clone.setAttribute("aria-hidden", "true");
+    clone.querySelector("img")?.setAttribute("alt", "");
+    clone.setAttribute("tabindex", "-1");
+    return clone;
+  });
+  track.append(...copy.map(function (item) { return item.cloneNode(true); }), ...copy);
+
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let timer = null;
+  let settleTimer = null;
+  let normalizing = false;
+
+  function copyWidth() {
+    const start = track.children[0];
+    const nextCopy = track.children[cardsPerCopy];
+    return start && nextCopy ? nextCopy.getBoundingClientRect().left - start.getBoundingClientRect().left : 0;
+  }
+  function canScroll() { return copyWidth() > track.clientWidth + 1; }
+  function controls() {
+    const enabled = canScroll();
+    [prevButton, nextButton].forEach(function (button) {
+      button.disabled = !enabled;
+      button.classList.toggle("is-hidden", !enabled);
+    });
+  }
+  function move(direction) {
+    const first = track.firstElementChild;
+    const gap = parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap) || 0;
+    if (first) track.scrollBy({ left: direction * (first.getBoundingClientRect().width + gap), behavior: prefersReducedMotion ? "auto" : "smooth" });
+  }
+  function stop() { clearInterval(timer); timer = null; }
+  function start() {
+    stop();
+    if (!prefersReducedMotion && canScroll()) timer = setInterval(function () { move(1); }, CAROUSEL_AUTOPLAY_MS);
+  }
+  function normalize() {
+    if (normalizing) return;
+    const width = copyWidth();
+    if (!width) return;
+    if (track.scrollLeft >= width * 2 - 1 || track.scrollLeft < width - 1) {
+      normalizing = true;
+      track.scrollLeft += track.scrollLeft >= width * 2 - 1 ? -width : width;
+      normalizing = false;
+    }
+  }
+
+  prevButton.addEventListener("click", function () { move(-1); start(); });
+  nextButton.addEventListener("click", function () { move(1); start(); });
+  track.addEventListener("scroll", function () {
+    controls();
+    clearTimeout(settleTimer);
+    settleTimer = setTimeout(normalize, 150);
+  }, { passive: true });
+  track.addEventListener("pointerdown", stop);
+  track.addEventListener("pointerup", start);
+  track.addEventListener("pointercancel", start);
+  track.addEventListener("mouseenter", stop);
+  track.addEventListener("mouseleave", start);
+  track.addEventListener("focusin", stop);
+  track.addEventListener("focusout", start);
+  window.addEventListener("resize", function () { track.scrollLeft = copyWidth(); controls(); start(); });
+  document.addEventListener("visibilitychange", function () { document.hidden ? stop() : start(); });
+  track.scrollLeft = copyWidth();
+  controls();
+  start();
+}
+
 /**
  * Adds the .visible class the first time a .reveal or .reveal-stagger
  * element enters the viewport. IntersectionObserver avoids scroll handlers,
@@ -1771,6 +1851,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   renderHomePage();       // home page product grids
   setupProductCarousel(); // New Arrivals carousel controls
+  setupInstagramCarousel(); // Community photo carousel
   renderShopPage();       // shop page grid + filters + sort
   renderProductPage();    // product detail page
   renderCartPage();       // full shopping bag page
